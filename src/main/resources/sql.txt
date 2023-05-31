@@ -1,0 +1,20 @@
+create table pageowner(
+		id varchar(8),
+		name varchar(255),
+		phone varchar(255),
+		age varchar (255),
+		PRIMARY KEY (id)
+);
+
+
+
+CREATE TABLE userpage (
+    page_id varchar(8) ,
+    ower_id varchar(8),
+    userPage_Name varchar(255),
+    page_name varchar(255),
+    page_earning DOUBLE ,
+    office_percent double, 
+    owner_percent double,
+    PRIMARY KEY (page_id)
+);

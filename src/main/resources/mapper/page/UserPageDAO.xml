@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vandy.page.repository.UserPageDAO">
+
+	<insert id="registerUserPageInfo">
+	  	<![CDATA[  
+			INSERT INTO USERPAGE
+			   (  PAGE_ID
+			     , OWNER_ID
+				, USERPAGE_NAME
+				, PAGE_NAME
+				, PAGE_EARNING
+				, OFFICE_PERCENT
+				, OWNER_PERCENT 
+			   ) VALUES
+		       (
+		          #{page_id}
+		        , #{owner_id}
+		        , #{userPage_name}
+		      	, #{page_name}
+		      	, #{page_earning}
+		      	, #{office_percent}
+		      	, #{owner_percent}
+		       )  
+	  	]]>
+	</insert>
+	
+	<update id="updateUserPageInfo">
+		<![CDATA[
+		UPDATE   USERPAGE
+			SET   OWNER_ID 			=	#{owner_id}
+		    	, USERPAGE_NAME 	=	#{userPage_name}
+		    	, PAGE_NAME 		=	#{page_name}
+		    	, PAGE_EARNING 		=	#{page_earning} 
+		    	, OFFICE_PERCENT 	=	#{office_percent} 
+		    	, OWNER_PERCENT 	=	#{owner_percent}
+			WHERE PAGE_ID  = #{page_id}	
+		]]>
+	</update>
+	
+	<select id="retriveUserPageInfo" resultType="Map">
+		<![CDATA[
+			SELECT  
+				  PAGE_ID 			AS "page_id"
+				, OWNER_ID			AS "owner_id"
+			    , USERPAGE_NAME 	AS "userPage_name"
+			    , PAGE_NAME 		AS "page_name"
+			    , PAGE_EARNING 		AS "page_earning" 
+			    , OFFICE_PERCENT 	AS "office_percent" 
+			    , OWNER_PERCENT 	AS "owner_percent"
+			FROM USERPAGE 
+				where PAGE_ID = #{page_id}
+		]]>
+	</select>
+	
+	<select id="retriveListUserPageInfo" resultType="Map">
+		<![CDATA[
+			SELECT  
+			  	  PAGE_ID 			AS "page_id"
+			  	, OWNER_ID			AS "owner_id"
+			    , USERPAGE_NAME 	AS "userPage_name"
+			    , PAGE_NAME 		AS "page_name"
+			    , PAGE_EARNING 		AS "page_earning" 
+			    , OFFICE_PERCENT 	AS "office_percent" 
+			    , OWNER_PERCENT 	AS "owner_percent"
+			FROM USERPAGE 
+				ORDER BY PAGE_ID DESC 
+		]]>
+	</select>
+	
+	<select id="retrieveMaxPageID" resultType="Map">
+		<![CDATA[
+			SELECT CONVERT(COALESCE( MAX( PAGE_ID ) + 1, 1 ), CHAR)  AS "maxPageID" from USERPAGE
+		]]>
+	</select>
+	
+	<delete id="deleteUserPage">
+		<![CDATA[
+			DELETE FROM USERPAGE WHERE  PAGE_ID  = #{page_id}
+		]]>
+	</delete>
+
+</mapper>

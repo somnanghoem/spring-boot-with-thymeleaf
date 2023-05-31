@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="vandy.page.repository.PageOwnerDAO">
+
+	<insert id="registerPageOwnerInfo">
+	  	<![CDATA[  
+			INSERT INTO PAGEOWNER ( ID , NAME , PHONE , AGE )
+					VALUES ( #{id} , #{name}, COALESCE ( #{phone}, '') , COALESCE ( #{age}, '' ) )
+	  	]]>
+	</insert>
+	
+	<update id="updatePageOwnerInfo">
+		<![CDATA[
+			UPDATE PAGEOWNER 
+				SET NAME  = #{name}
+				  , PHONE = coalesce( #{phone}, '')
+				  ,  AGE  = coalesce ( #{age}, '' )
+			WHERE ID = #{id}
+		]]>
+	</update>
+	
+	<select id="retrivePageOwnerInfo" resultType="Map">
+		<![CDATA[
+			SELECT 
+				  ID 	AS "id"
+				, NAME 	AS "name"
+				, PHONE AS "phone"
+				, AGE 	AS "age"
+			FROM PAGEOWNER
+			WHERE ID = #{id}
+		]]>
+	</select>
+	
+	<select id="retriveListPageOwnerInfo" resultType="Map">
+		<![CDATA[
+				SELECT 
+					  ID 	AS "id"
+					, NAME 	AS "name"
+					, PHONE AS "phone"
+					, AGE 	AS "age"
+				FROM PAGEOWNER
+				ORDER BY ID DESC  
+		]]>
+	</select>
+	
+	<select id="retrieveMaxPageID" resultType="Map">
+		<![CDATA[
+			SELECT CONVERT(COALESCE( MAX( ID ) + 1, 1 ), CHAR)  AS "maxID" from PAGEOWNER
+		]]>
+	</select>
+	
+	<delete id="deletePageOwner">
+		<![CDATA[
+			DELETE FROM PAGEOWNER WHERE  ID  = #{id}
+		]]>
+	</delete>
+
+</mapper>

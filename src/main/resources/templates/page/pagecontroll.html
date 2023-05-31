@@ -1,0 +1,550 @@
+
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Admin</title>
+<div th:replace="fragments/header :: header-css" />
+</head>
+<body class="hold-transition sidebar-mini layout-fixed">
+
+	<div th:replace="fragments/header :: header" />
+
+	<div th:replace="fragments/leftside :: leftside" />
+
+	<div class="content-wrapper">
+		<!-- Content Header (Page header) -->
+		<section class="content-header">
+			<div class="container-fluid">
+				<div class="row mb-2">
+					<div class="col-sm-6">
+						<h1></h1>
+					</div>
+					<div class="col-sm-6">
+						<ol class="breadcrumb float-sm-right">
+							<li class="breadcrumb-item"><a href="#">Home</a></li>
+							<li class="breadcrumb-item active">Page</li>
+						</ol>
+					</div>
+				</div>
+			</div>
+			<!-- /.container-fluid -->
+
+			<section class="content">
+				<div class="container-fluid">
+					<div class="row">
+						<div class="col-12">
+							<div class="card">
+								<div class="card-header">
+									<!-- <button type="button" class="btn btn-default"
+										data-toggle="modal" data-target="#updateModal">Launch
+										Extra Large Modal</button> -->
+									<button type="button" class="btn btn-success"
+										data-toggle="modal" data-target="#registerModal" th:onclick="registerModel()">
+										<i class="fas fa-plus"></i>
+										<span>Add New</span>
+									</button>
+								</div>
+								<!-- /.card-header -->
+								<div class="card">
+									<div class="card-header"><h1>All Page</h1></div>
+									<!-- /.card-header -->
+									<div class="card-body">
+										<table id="example1"
+											class="table table-bordered table-striped">
+											<thead>
+												<tr>
+													<th>Page ID</th>
+													<th>Page Owner Name</th>
+													<th>Page Name</th>
+													<th>Page Earning</th>
+													<th>Office 40%</th>
+													<th>Page Owner 60%</th>
+													<th>Action</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr th:each="pageList:${pageList}">
+													<td th:text="${pageList.page_id}"></td>
+													<td th:text="${pageList.userPage_name}"></td>
+													<td th:text="${pageList.page_name}"></td>
+													<td th:text="${pageList.page_earning}"></td>
+													<td th:text="${pageList.office_percent}"></td>
+													<td th:text="${pageList.owner_percent}"></td>
+													<td>
+														<button type="button" data-toggle="modal"
+															data-target="#updateModal"
+															th:onclick="editUserPage( [[${pageList}]] );"
+															class="btn btn-success btn-xs">
+															<i class="fas fa-edit"></i>
+														</button>
+														<button type="button" id="pageDelete"
+															th:onclick="deleteUserPage( [[${pageList.page_id}]] );"
+															class="btn btn-danger btn-xs">
+															<i class="far fa-trash-alt"></i>
+														</button>
+													</td>
+												</tr>
+											</tbody>
+											<tfoot>
+												<tr>
+													<th>Page ID</th>
+													<th>Page Owner Name</th>
+													<th>Page Name</th>
+													<th>Page Earning</th>
+													<th>Office 40%</th>
+													<th>Page Owner 60%</th>
+													<th>Action</th>
+												</tr>
+											</tfoot>
+										</table>
+									</div>
+									<!-- /.card-body -->
+								</div>
+								<!-- /.card-body -->
+							</div>
+							<!-- /.card -->
+						</div>
+						<!-- /.col -->
+					</div>
+					<!-- /.row -->
+				</div>
+				<!-- /.container-fluid -->
+			</section>
+		</section>
+		<!-- Modal Register -->
+		<div class="modal fade" id="registerModal">
+			<div class="modal-dialog modal-xl">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title">Register User Page</h4>
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div class="card card-primary">
+							<div class="card-header"></div>
+							<!-- /.card-header -->
+							<!-- form start -->
+							<form>
+								<div class="card-body">
+									<div class="row">
+										<div class="col-md-6">
+											
+											<div class="form-group">
+												<label>Page ID</label> <input type="text"
+													class="form-control" disabled="true">
+											</div>
+											<div class="form-group">
+												<label>Page Owner Name</label> <!-- <input type="text"
+													class="form-control" id="registerPageOwnerName"> -->
+												<select class="form-control" id="registerPageOwnerName">
+													<option th:each="ownerList : ${ownerList}" th:value="${ownerList.id}" th:text="${ownerList.name}"></option>
+												</select>
+											</div>
+											<div class="form-group">
+												<label>Page Name</label> <input type="text"
+													class="form-control" id="registerPageName">
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="form-group">
+												<label>Page Earning</label> <input type="number"
+													class="form-control" id="registerPageEarning"
+													th:onchange="registerPageEarningChange()">
+											</div>
+											<div class="form-group">
+												<label>Office 40%</label> <input type="number"
+													class="form-control" id="registerOffice40" disabled="true">
+											</div>
+											<div class="form-group">
+												<label>Page Owner 60%</label> <input type="number"
+													class="form-control" id="registerOwner60" disabled="true">
+											</div>
+										</div>
+									</div>
+								</div>
+								<!-- /.card-body -->
+							</form>
+						</div>
+					</div>
+					<div class="modal-footer justify-content-between">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						<button type="button" class="btn btn-primary"
+							id="registerUserPage">Save</button>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+		<!-- Modal Update -->
+		<div class="modal fade" id="updateModal">
+			<div class="modal-dialog modal-xl">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title">Update User Page</h4>
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div class="card card-primary">
+							<div class="card-header"></div>
+							<!-- /.card-header -->
+							<!-- form start -->
+							<form>
+								<div class="card-body">
+									<div class="row">
+										<div class="col-md-6">
+											<div class="form-group">
+												<label>Page ID</label> <input type="text"
+													class="form-control" id="updatePageID" disabled="true">
+											</div>
+											<div class="form-group">
+												<label>Page Owner Name</label> <!-- <input type="text"
+													class="form-control" id="updatePageOwnerName"> -->
+												<select class="form-control" id="updatePageOwnerName">
+													<option th:each="ownerList : ${ownerList}" th:value="${ownerList.id}" th:text="${ownerList.name}"></option>
+												</select>
+											</div>
+											<div class="form-group">
+												<label>Page Name</label> <input type="text"
+													class="form-control" id="updatePageName">
+											</div>
+										</div>
+										<div class="col-md-6">
+											<div class="form-group">
+												<label>Page Earning</label> <input type="number"
+													class="form-control" id="updatePageEarning"
+													th:onchange="updatePageEarningChange()">
+											</div>
+											<div class="form-group">
+												<label>Office 40%</label> <input type="number"
+													class="form-control" id="updateOffice40" disabled="true">
+											</div>
+											<div class="form-group">
+												<label>Page Owner 60%</label> <input type="number"
+													class="form-control" id="updateOwner60" disabled="true">
+											</div>
+										</div>
+									</div>
+								</div>
+								<!-- /.card-body -->
+							</form>
+						</div>
+					</div>
+					<div class="modal-footer justify-content-between">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						<button type="button" class="btn btn-primary" id="updateUserPage">Save
+							changes</button>
+					</div>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+	</div>
+
+	<div th:replace="fragments/footer :: footer" />
+
+	<script>
+		$(function() {
+			/*=========================
+			 *  		table 
+			 *========================*/
+			$("#example1").DataTable(
+					{
+						"responsive" : true,
+						"lengthChange" : false,
+						"autoWidth" : false,
+						"ordering": false,
+						"buttons" : [ "copy", "csv", "excel", "pdf", "print", "colvis" ]
+					}
+					).buttons().container().appendTo( '#example1_wrapper .col-md-6:eq(0)' );
+			
+			/*=========================
+			 *  	Register Function 
+			 *========================*/
+			$('#registerUserPage').click( function() {
+				
+		        var registerPageOwnerName 	=  $('#registerPageOwnerName').find(":selected").text();
+		        var registerPageOwnerID 	=  $('#registerPageOwnerName').find(":selected").val();
+		        var registerPageName 		=  $("#registerPageName").val();
+		        var registerPageEarning 	=  $("#registerPageEarning").val();
+		        
+		        if ( registerPageOwnerName == "" ) {
+		        	Swal.fire(
+						      'Required!',
+						      'Page Owner Name Should not be empty',
+						      'success'
+						    )
+		        } else if ( registerPageName == "" ) {
+		        	Swal.fire(
+						      'Required!',
+						      'Page Name Should not be empty',
+						      'success'
+						    )
+		        }  else if ( registerPageEarning == '' ) {
+		        	Swal.fire(
+						      'Required!',
+						      'Page Earning Should not be empty',
+						      'success'
+						    )
+		        } else {
+		        	
+		        	Swal.fire({
+						  title: 'Are you sure?',
+						  text: "You want to add new!",
+						  icon: 'warning',
+						  showCancelButton: true,
+						  confirmButtonColor: '#3085d6',
+						  cancelButtonColor: '#d33',
+						  confirmButtonText: 'Yes, Add New!'
+						}).then((result) => {
+						  if (result.isConfirmed) {	  
+							  var requestData = {
+												  	"body":{
+											 				 "userPage_name": registerPageOwnerName,
+											 				 "owner_id"		: registerPageOwnerID,
+											 				 "page_name"	: registerPageName,
+											 				 "page_earning"	: registerPageEarning
+										  				   }
+										  		};
+							  $.ajax({
+							        type: "POST",
+							        contentType: "application/json",
+							        url: "/api/v1/user_page/register",
+							        data: JSON.stringify(requestData),
+							        dataType: 'json',
+							        cache: false,
+							        timeout: 600000,
+							        success: function (data) {
+							           var header = data.header;
+							           if ( "Y" == header.successYN ) {
+							        	   Swal.fire(
+												      'Add!',
+												      'Data has been added.',
+												      'success'
+												    )
+										  // reload page
+										  setTimeout("window.location.reload()",1000);
+							           } else {
+							        	   Swal.fire(
+								        		      'Fail',
+								        		      'Cannot add new data',
+								        		      'error'
+								         	)
+							           }
+							        },
+							        error: function (e) {
+							        	Swal.fire(
+							        		      'Fail',
+							        		      'Cannot add new data',
+							        		      'error'
+							         	)
+
+							        }
+							    });
+						  }
+						})
+		        }
+				
+			});
+			
+			/*=========================
+			 *  	Update Function 
+			 *========================*/
+			$('#updateUserPage').click( function() {  
+				
+				var updatePageID 		 =  $("#updatePageID").val();
+		        var updatePageOwnerName  =  $('#updatePageOwnerName').find(":selected").text();
+		        var updatePageOwnerID    =  $('#updatePageOwnerName').find(":selected").val();
+		        var updatePageName 		 =  $("#updatePageName").val();
+		        var updatePageEarning 	 =  $("#updatePageEarning").val();
+				
+		        if ( updatePageOwnerName == "" ) {
+		        	Swal.fire(
+						      'Required!',
+						      'Page Owner Name Should not be empty',
+						      'success'
+						    )
+		        } else if ( updatePageName == "" ) {
+		        	Swal.fire(
+						      'Required!',
+						      'Page Name Should not be empty',
+						      'success'
+						    )
+		        } else if ( updatePageEarning == '' ) {
+		        	Swal.fire(
+						      'Required!',
+						      'Page Earning Should not be empty',
+						      'success'
+						    )
+		        } else {
+				        
+				        Swal.fire({
+							  title: 'Are you sure?',
+							  text: "You want to update!",
+							  icon: 'warning',
+							  showCancelButton: true,
+							  confirmButtonColor: '#3085d6',
+							  cancelButtonColor: '#d33',
+							  confirmButtonText: 'Yes, update it!'
+							}).then((result) => {
+							  if (result.isConfirmed) {	  
+								  var requestData = {
+													  	"body":{
+												 				 "page_id"		: updatePageID,
+												 				 "owner_id"		: updatePageOwnerID,
+												 				 "userPage_name": updatePageOwnerName,
+												 				 "page_name"	: updatePageName,
+												 				 "page_earning"	: updatePageEarning
+											  				   }
+											  		};
+								  $.ajax({
+								        type: "POST",
+								        contentType: "application/json",
+								        url: "/api/v1/user_page/update",
+								        data: JSON.stringify(requestData),
+								        dataType: 'json',
+								        cache: false,
+								        timeout: 600000,
+								        success: function (data) {
+								           var header = data.header;
+								           if ( "Y" == header.successYN ) {
+								        	   Swal.fire(
+													      'Update!',
+													      'Data has been updated.',
+													      'success'
+													    )
+											  // reload page
+											  setTimeout("window.location.reload()",1000);
+								           } else {
+								        	   Swal.fire(
+									        		      'Fail',
+									        		      'Cannot update data',
+									        		      'error'
+									         	)
+								           }
+								        },
+								        error: function (e) {
+								        	Swal.fire(
+								        		      'Fail',
+								        		      'Cannot update data',
+								        		      'error'
+								         	)
+
+								        }
+								    });
+							  }
+							})
+		        }
+		        
+			 });  
+			
+		}); // end function()
+		
+		// 
+		function registerPageEarningChange(){
+			 var registerPageEarning 	=  $("#registerPageEarning").val();
+			 var officePercent 			= registerPageEarning * 0.4;
+			 var ownerPercent 			= registerPageEarning * 0.6;
+			 $("#registerOffice40").val( officePercent );
+		     $("#registerOwner60").val( ownerPercent );
+		}
+		
+		// page earning on change
+		function updatePageEarningChange() {
+			 var updatePageEarning 	=  $("#updatePageEarning").val();
+			 var officePercent 		= updatePageEarning * 0.4;
+			 var ownerPercent 		= updatePageEarning * 0.6;
+			 $("#updateOffice40").val( officePercent );
+		     $("#updateOwner60").val( ownerPercent );
+		}
+		
+		
+		function registerModel(){
+			// init value
+            $("#registerPageName").val( '' );
+            $("#registerPageEarning").val( 0 );
+            $("#registerOffice40").val( 0 );
+            $("#registerOwner60").val( 0 );
+		}
+		/*=========================
+		 *  	Edit Modal 
+		 *========================*/
+		function editUserPage( userPage ) {
+				// init value
+	            $("#updatePageID").val( userPage.page_id );
+	            $("#updatePageOwnerName").val( userPage.owner_id );
+	            $("#updatePageName").val( userPage.page_name );
+	            $("#updatePageEarning").val( userPage.page_earning );
+	            $("#updateOffice40").val( userPage.office_percent );
+	            $("#updateOwner60").val( userPage.owner_percent );
+		} // end editUserPage()
+		
+		/*=========================
+		 *  	Delete Function
+		 *========================*/
+		function deleteUserPage( pageID ) {
+			
+			Swal.fire({
+				  title: 'Are you sure?',
+				  text: "You want to delete!",
+				  icon: 'warning',
+				  showCancelButton: true,
+				  confirmButtonColor: '#3085d6',
+				  cancelButtonColor: '#d33',
+				  confirmButtonText: 'Yes, delete it!'
+				}).then((result) => {
+				  if (result.isConfirmed) {	  
+					  var requestData = {
+										  	"body":{
+									 				 "page_id": pageID
+								  				   }
+								  		};
+					  $.ajax({
+					        type: "POST",
+					        contentType: "application/json",
+					        url: "/api/v1/user_page/delete",
+					        data: JSON.stringify(requestData),
+					        dataType: 'json',
+					        cache: false,
+					        timeout: 600000,
+					        success: function (data) {
+					           var header = data.header;
+					           if ( "Y" == header.successYN ) {
+					        	   Swal.fire(
+										      'Deleted!',
+										      'Data has been deleted.',
+										      'success'
+										    )
+								  // reload page
+								  setTimeout("window.location.reload()",1000);
+					           } else {
+					        	   Swal.fire(
+						        		      'Fail',
+						        		      'Cannot delete data',
+						        		      'error'
+						         	)
+					           }
+					        },
+					        error: function (e) {
+					        	Swal.fire(
+					        		      'Fail',
+					        		      'Cannot delete data',
+					        		      'error'
+					         	)
+
+					        }
+					    });
+				  }
+				})
+		} // end deleteUserPage()
+		
+	</script>
+</body>
+</html>
